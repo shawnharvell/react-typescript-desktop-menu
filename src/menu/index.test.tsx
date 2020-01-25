@@ -4,7 +4,7 @@ import Enzyme, { mount } from 'enzyme';
 import Adapter from 'enzyme-adapter-react-16';
 
 // const mockedClickEvent = { preventDefault: () => {} };
-const mockedActionHandler = jest.fn((tag: string, checked: boolean, e: any) => {
+const mockedActionHandler = jest.fn((tag: string, checked: boolean, e: React.MouseEvent<HTMLLIElement, MouseEvent>) => {
     console.debug(tag, checked, e);
 });
 

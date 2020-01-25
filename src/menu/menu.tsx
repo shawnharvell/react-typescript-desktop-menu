@@ -260,6 +260,13 @@ class Menu extends Component<MenuProps, MenuState> {
         delete rest.keyboard;
         delete rest.action;
         delete rest.className;
+        delete rest.menuItemActiveStyle;
+        delete rest.menuItemArrowStyle;
+        delete rest.menuItemDisabledStyle;
+        delete rest.menuItemIconStyle;
+        delete rest.menuItemInfoStyle;
+        delete rest.menuItemLabelStyle;
+        delete rest.menuItemStyle;
 
         if (!display) {
             return null;
