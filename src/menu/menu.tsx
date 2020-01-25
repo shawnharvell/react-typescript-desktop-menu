@@ -19,8 +19,6 @@ interface MenuProps {
 }
 
 const Menu: React.FC<MenuProps> = ({ children, display, style, className, action, ...rest }) => {
-    // todo what about bob? public static isReactDesktopMenu = true;
-
     const items: React.ReactNode[] = [];
     let delay = 0;
     // let ul: HTMLUListElement | null = null;
