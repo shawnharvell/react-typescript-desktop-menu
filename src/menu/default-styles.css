@@ -1,0 +1,92 @@
+.react-menu-bar-divider {
+    border-bottom: 1px solid #ccc;
+    width: 100%;
+}
+
+.react-menu-bar-menu {
+    display: inline-block;
+    position: absolute;
+    background-color: white;
+    border: 1px solid gray;
+    border-radius: 2;
+    box-shadow: 2px 1px 1px gray;
+    list-style: none;
+    padding: 3px 0px;
+    margin: 0;
+    line-height: normal;
+    z-index: 100000 !important;
+    margin-left: -0.5em;
+}
+
+.react-menu-bar-menu-bar-container {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    z-index: 100000;
+}
+
+.react-menu-bar-menu-bar-item {
+    display: inline-block;
+    padding: 0.2em 0.5em;
+    cursor: default;
+    margin: 0;
+}
+
+.react-menu-bar-menu-bar-item-active {
+    background-color: #ddd;
+}
+
+.react-menu-bar-menu-bar-item:hover {
+    background-color: #ddd;
+}
+
+.react-menu-bar-menu-bar-item:focus {
+    outline-color: transparent;
+    outline-style: none;
+    /* if you want the bar items to remain a color when clicked, set this to something */
+    /* background-color: #ddd; */
+}
+
+.react-menu-bar-menu-item-submenu-arrow {
+    font-size: 20px;
+}
+
+.react-menu-bar-menu-item-info {
+    color: gray;
+}
+
+.react-menu-bar-menu-item-label {
+    margin-right: 15;
+    flex: 1;
+}
+
+.react-menu-bar-menu-item-icon {
+    width: 16px;
+    margin-right: 5px;
+    color: black;
+}
+
+.react-menu-bar-menu-item-container {
+    margin: 0;
+    white-space: nowrap;
+    line-height: 140%;
+    padding: 2px 5px;
+    cursor: default;
+    display: flex;
+    align-items: center;
+    color: #333;
+}
+
+.react-menu-bar-menu-item-container-active {
+    background-color: #ddd;
+}
+
+.react-menu-bar-menu-item-container-disabled {
+    color: gray;
+    font-style: italic;
+    cursor: not-allowed;
+}
+
+.react-menu-bar-menu-item-checkbox {
+    font-size: 20px;
+}
