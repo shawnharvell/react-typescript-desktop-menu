@@ -121,7 +121,6 @@ const Menubar: React.FC<MenubarProps> = ({ children, style, childStyle, action, 
 
             let className = styles['react-menu-bar-menu-bar-item'] + ' react-menu-bar-menu-bar-item ';
             if (active) {
-                // TODO: do I need this?
                 className += styles['react-menu-bar-menu-bar-item-active'] + ' react-menu-bar-menu-bar-item-active';
             }
 
