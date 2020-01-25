@@ -25,7 +25,7 @@ interface MenubarProps {
 
 const Menubar: React.FC<MenubarProps> = ({ children, style, childStyle, action, onSetOpen, isOpen, ...rest }) => {
     const items: React.ReactNode[] = [];
-    let ul: HTMLUListElement | null = null;
+    // let ul: HTMLUListElement | null = null;
 
     const [menuActive, setMenuActive] = useState(-1);
 
@@ -85,7 +85,8 @@ const Menubar: React.FC<MenubarProps> = ({ children, style, childStyle, action, 
     };
 
     const renderChildren = (): JSX.Element[] | null | undefined => {
-        return React.Children.map<JSX.Element, React.ReactNode>(children, (child: React.ReactNode, index: number) => {
+        let index = -1;
+        return React.Children.map<JSX.Element, React.ReactNode>(children, (child: React.ReactNode) => {
             // I know this looks a bit odd but functionally speaking it would never happen, there are just still
             // some holes in React's typescript awareness that this gets around
             if (!child || child === null) {
@@ -94,11 +95,13 @@ const Menubar: React.FC<MenubarProps> = ({ children, style, childStyle, action, 
                 return <React.Fragment>{child}</React.Fragment>;
             }
 
+            index++;
+
             const active = menuActive === index;
 
             const props = {
                 display: isOpen && active,
-                ref: (): void => setRef(index, child),
+                // ref: (): void => setRef(index, child),
                 style: { ...rest.menuStyle, ...child.props.style },
                 action: child.props.action,
                 menuItemStyle: { ...rest.menuItemStyle, ...child.props.menuItemStyle },
@@ -148,9 +151,9 @@ const Menubar: React.FC<MenubarProps> = ({ children, style, childStyle, action, 
             style={{ ...style }}
             onMouseDown={handleMouseDown}
             onMouseOut={handleMouseOut}
-            ref={(node): void => {
-                ul = node;
-            }}
+            // ref={(node): void => {
+            //     ul = node;
+            // }}
         >
             {renderChildren()}
         </ul>

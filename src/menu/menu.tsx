@@ -23,7 +23,7 @@ const Menu: React.FC<MenuProps> = ({ children, display, style, className, action
 
     const items: React.ReactNode[] = [];
     let delay = 0;
-    let ul: HTMLUListElement | null = null;
+    // let ul: HTMLUListElement | null = null;
 
     const [itemActive, setItemActive] = useState(-1);
     const [submenuDisplay, setSubmenuDisplay] = useState(false);
@@ -39,7 +39,8 @@ const Menu: React.FC<MenuProps> = ({ children, display, style, className, action
 
             const currentElmt = items[i];
 
-            if (currentElmt && currentElmt.hasSubmenu && currentElmt.hasSubmenu()) {
+            //if (currentElmt && currentElmt.hasSubmenu && currentElmt.hasSubmenu()) {
+            if (currentElmt) {
                 delay = window.setTimeout(() => setSubmenuDisplay(true), 300);
             }
         }
@@ -52,45 +53,49 @@ const Menu: React.FC<MenuProps> = ({ children, display, style, className, action
     const renderChildren = (): JSX.Element[] | null | undefined => {
         let index = -1;
 
-        return React.Children.map(children, (child: any) => {
-            if (child.type && child.type.isReactDesktopMenuItem) {
-                index++;
-
-                const props = {
-                    active: index === itemActive,
-                    ref: (): void => setRef(index, child),
-                    submenuDisplay: index === itemActive && submenuDisplay,
-                    onMouseOver: child.props.onMouseOver,
-                    action: child.props.action,
-                    style: { ...rest.menuItemStyle, ...child.props.style },
-                    iconStyle: { ...rest.menuItemIconStyle, ...child.props.iconStyle },
-                    disabledStyle: { ...rest.menuItemDisabledStyle, ...child.props.disabledStyle },
-                    infoStyle: { ...rest.menuItemInfoStyle, ...child.props.infoStyle },
-                    labelStyle: { ...rest.menuItemLabelStyle, ...child.props.labelStyle },
-                    arrowStyle: { ...rest.menuItemArrowStyle, ...child.props.arrowStyle },
-                    activeStyle: { ...rest.menuItemActiveStyle, ...child.props.activeStyle },
-                };
-
-                // const onMouseOver: (index: number) => void = (index) => handleMouseOver(index);
-
-                if ('onMouseOver' in child.props) {
-                    const ownMouseOver = child.props.onMouseOver;
-                    props.onMouseOver = (e: any): void => {
-                        ownMouseOver(e);
-                        handleMouseOver(index);
-                    };
-                } else {
-                    props.onMouseOver = (): void => handleMouseOver(index);
-                }
-
-                if (!('action' in child.props) || !child.props.action) {
-                    props.action = action;
-                }
-
-                return React.cloneElement(child, props);
-            } else {
-                return child;
+        return React.Children.map<JSX.Element, React.ReactNode>(children, (child: React.ReactNode) => {
+            // I know this looks a bit odd but functionally speaking it would never happen, there are just still
+            // some holes in React's typescript awareness that this gets around
+            if (!child || child === null) {
+                return <React.Fragment />;
+            } else if (!React.isValidElement(child)) {
+                return <React.Fragment>{child}</React.Fragment>;
             }
+
+            index++;
+
+            const props = {
+                active: index === itemActive,
+                // ref: (): void => setRef(index, child),
+                submenuDisplay: index === itemActive && submenuDisplay,
+                onMouseOver: child.props.onMouseOver,
+                action: child.props.action,
+                style: { ...rest.menuItemStyle, ...child.props.style },
+                iconStyle: { ...rest.menuItemIconStyle, ...child.props.iconStyle },
+                disabledStyle: { ...rest.menuItemDisabledStyle, ...child.props.disabledStyle },
+                infoStyle: { ...rest.menuItemInfoStyle, ...child.props.infoStyle },
+                labelStyle: { ...rest.menuItemLabelStyle, ...child.props.labelStyle },
+                arrowStyle: { ...rest.menuItemArrowStyle, ...child.props.arrowStyle },
+                activeStyle: { ...rest.menuItemActiveStyle, ...child.props.activeStyle },
+            };
+
+            // const onMouseOver: (index: number) => void = (index) => handleMouseOver(index);
+
+            if ('onMouseOver' in child.props) {
+                const ownMouseOver = child.props.onMouseOver;
+                props.onMouseOver = (e: any): void => {
+                    ownMouseOver(e);
+                    handleMouseOver(index);
+                };
+            } else {
+                props.onMouseOver = (): void => handleMouseOver(index);
+            }
+
+            if (!('action' in child.props) || !child.props.action) {
+                props.action = action;
+            }
+
+            return React.cloneElement(child, props);
         });
     };
 
@@ -118,9 +123,9 @@ const Menu: React.FC<MenuProps> = ({ children, display, style, className, action
             {...rest}
             className={styles['react-menu-bar-menu'] + ' react-menu-bar-menu ' + className}
             style={{ ...style }}
-            ref={(node): void => {
-                ul = node;
-            }}
+            // ref={(node): void => {
+            //     ul = node;
+            // }}
         >
             {renderChildren()}
         </ul>
