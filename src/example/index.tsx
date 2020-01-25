@@ -11,6 +11,7 @@ const Example: React.FC = props => {
     // contextmenu = React.forwardRef();
 
     const [contextMenuIsOpen, setContextMenuIsOpen] = useState(false);
+    const [menuBarIsOpen, setMenuBarIsOpen] = useState(false);
 
     const menubarHandler = (tag: string, checked: boolean, e: React.MouseEvent<HTMLLIElement, MouseEvent>): void => {
         console.log('menubarHandler', tag, checked, e);
@@ -25,6 +26,10 @@ const Example: React.FC = props => {
     const menuitemHandler = (tag: string, checked: boolean, e: React.MouseEvent<HTMLLIElement, MouseEvent>): void => {
         console.log('menuitemHandler', tag, checked, e);
         //this.menubar?.close();
+    };
+
+    const onMenuBarSetOpen = (open: boolean): void => {
+        setMenuBarIsOpen(open);
     };
 
     const onContextMenuSetOpen = (open: boolean): void => {
@@ -65,6 +70,8 @@ const Example: React.FC = props => {
                     // ref={elmt => (menubar = elmt)}
                     style={{ border: '1px solid #eee' }}
                     action={menubarHandler}
+                    isOpen={menuBarIsOpen}
+                    onSetOpen={onMenuBarSetOpen}
                     {...props}
                 >
                     <Menu label="Icons">
