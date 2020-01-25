@@ -6,7 +6,6 @@ interface MenubarProps {
     children: React.ReactNode;
     style?: CSSProperties;
     childStyle?: CSSProperties;
-    keyboard?: boolean;
     action?: (tag: string, checked: boolean, event: React.MouseEvent<HTMLLIElement, MouseEvent>) => void;
 
     onSetOpen: (open: boolean) => void;
@@ -24,22 +23,8 @@ interface MenubarProps {
     menuItemActiveStyle?: CSSProperties;
 }
 
-interface MenubarState {
-    showMenus: boolean;
-    menuActive: number;
-}
-
-const Menubar: React.FC<MenubarProps> = ({
-    children,
-    style,
-    childStyle,
-    keyboard = true,
-    action,
-    onSetOpen,
-    isOpen,
-    ...rest
-}) => {
-    const items: any[] = [];
+const Menubar: React.FC<MenubarProps> = ({ children, style, childStyle, action, onSetOpen, isOpen, ...rest }) => {
+    const items: React.ReactNode[] = [];
     let ul: HTMLUListElement | null = null;
 
     const [menuActive, setMenuActive] = useState(-1);
@@ -75,78 +60,46 @@ const Menubar: React.FC<MenubarProps> = ({
 
     const handleKeyDown = useCallback(
         (e: KeyboardEvent): void => {
-            const length = React.Children.count(children);
-            const current = menuActive;
-            const currentElmt = items[current];
-            const submenuDisplay = currentElmt && currentElmt.state.submenuDisplay;
-
-            let newValue = null;
-
             switch (e.key) {
                 case 'Escape':
-                    if (!submenuDisplay) {
-                        close();
-                    }
-                    break;
-
-                case 'ArrowLeft':
-                    if (submenuDisplay || !isOpen) {
-                        return;
-                    }
-
-                    if (current === null || current - 1 < 0) {
-                        newValue = length - 1;
-                    } else {
-                        newValue = current - 1;
-                    }
-                    break;
-
-                case 'ArrowRight':
-                    if (submenuDisplay || !isOpen) {
-                        return;
-                    }
-
-                    if (current === null || current + 1 >= length) {
-                        newValue = 0;
-                    } else {
-                        newValue = current + 1;
-                    }
+                    close();
                     break;
 
                 default:
                     break;
             }
-
-            if (newValue !== null) {
-                setMenuActive(newValue);
-            }
         },
-        [children, close, isOpen, items, menuActive],
+        [close],
     );
 
     useEffect(() => {
-        if (keyboard) {
-            document.addEventListener('keydown', handleKeyDown);
-        }
+        document.addEventListener('keydown', handleKeyDown);
 
         return (): void => {
             document.removeEventListener('keydown', handleKeyDown);
         };
-    }, [keyboard, handleKeyDown]);
+    }, [handleKeyDown]);
 
-    const setRef = (i: number, elmt: any): void => {
+    const setRef = (i: number, elmt: React.ReactNode): void => {
         items[i] = elmt;
     };
 
-    const renderChildren = (): any[] | null | undefined => {
-        return React.Children.map(children, (child: any, index: number) => {
+    const renderChildren = (): JSX.Element[] | null | undefined => {
+        return React.Children.map<JSX.Element, React.ReactNode>(children, (child: React.ReactNode, index: number) => {
+            // I know this looks a bit odd but functionally speaking it would never happen, there are just still
+            // some holes in React's typescript awareness that this gets around
+            if (!child || child === null) {
+                return <React.Fragment />;
+            } else if (!React.isValidElement(child)) {
+                return <React.Fragment>{child}</React.Fragment>;
+            }
+
             const active = menuActive === index;
 
             const props = {
                 display: isOpen && active,
-                ref: setRef.bind(index),
+                ref: (): void => setRef(index, child),
                 style: { ...rest.menuStyle, ...child.props.style },
-                keyboard: false,
                 action: child.props.action,
                 menuItemStyle: { ...rest.menuItemStyle, ...child.props.menuItemStyle },
                 menuItemIconStyle: { ...rest.menuItemIconStyle, ...child.props.menuItemIconStyle },
@@ -159,10 +112,6 @@ const Menubar: React.FC<MenubarProps> = ({
                 menuItemArrowStyle: { ...rest.menuItemArrowStyle, ...child.props.menuItemArrowStyle },
                 menuItemActiveStyle: { ...rest.menuItemActiveStyle, ...child.props.menuItemActiveStyle },
             };
-
-            if (!('keyboard' in child.props)) {
-                props.keyboard = keyboard || false;
-            }
 
             if (!('action' in child.props) || !child.props.action) {
                 props.action = action;

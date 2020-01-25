@@ -24,7 +24,6 @@ interface MenuItemProps {
     onMouseOut?: (e: React.MouseEvent) => void;
     active?: boolean;
     submenuDisplay?: boolean;
-    keyboard?: boolean;
 
     tag: string;
 }
@@ -61,7 +60,6 @@ class MenuItem extends React.Component<MenuItemProps, MenuItemState> {
         onMouseOut: PropTypes.func,
         active: PropTypes.bool,
         submenuDisplay: PropTypes.bool,
-        keyboard: PropTypes.bool,
 
         tag: PropTypes.string.isRequired,
     };
@@ -233,7 +231,6 @@ class MenuItem extends React.Component<MenuItemProps, MenuItemState> {
             ref: (node: any): void => {
                 this.submenu = node;
             },
-            keyboard: false,
             action: child.props.action,
             menuItemStyle: { ...this.props.style, ...child.props.menuItemStyle },
             menuItemIconStyle: { ...this.props.iconStyle, ...child.props.menuItemIconStyle },
@@ -243,10 +240,6 @@ class MenuItem extends React.Component<MenuItemProps, MenuItemState> {
             menuItemArrowStyle: { ...this.props.arrowStyle, ...child.props.menuItemArrowStyle },
             menuItemActiveStyle: { ...this.props.activeStyle, ...child.props.menuItemActiveStyle },
         };
-
-        if (!('keyboard' in child.props)) {
-            props.keyboard = this.props.keyboard || false;
-        }
 
         if (!('action' in child.props) || !child.props.action) {
             props.action = this.props.action;

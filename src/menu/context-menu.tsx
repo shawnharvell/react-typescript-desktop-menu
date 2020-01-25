@@ -1,4 +1,4 @@
-import React, { useRef, useCallback } from 'react';
+import React, { useRef, useCallback, useEffect } from 'react';
 import styles from './default-styles.css';
 import useContextMenu from './use-context-menu';
 import useOnClickOutside from './use-on-click-outside';
@@ -21,6 +21,28 @@ const ContextMenu: React.FC<ContextMenuProps> = ({ children, menu, outerRef, onS
     }, [onSetOpen]);
 
     useOnClickOutside(containerRef, clickOutsideHandler);
+
+    const handleKeyDown = useCallback(
+        (e: KeyboardEvent): void => {
+            switch (e.key) {
+                case 'Escape':
+                    clickOutsideHandler();
+                    break;
+
+                default:
+                    break;
+            }
+        },
+        [clickOutsideHandler],
+    );
+
+    useEffect(() => {
+        document.addEventListener('keydown', handleKeyDown);
+
+        return (): void => {
+            document.removeEventListener('keydown', handleKeyDown);
+        };
+    }, [handleKeyDown]);
 
     const content = React.Children.only(children);
 

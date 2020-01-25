@@ -8,7 +8,6 @@ interface MenuProps {
     display?: boolean;
     style?: CSSProperties;
     label?: string | React.ReactNode;
-    keyboard?: boolean;
     className?: string;
     action?: (tag: string, checked: boolean, event: any) => void;
 
@@ -33,7 +32,6 @@ class Menu extends Component<MenuProps, MenuState> {
         style: PropTypes.object,
         label: PropTypes.oneOfType([PropTypes.string, PropTypes.node]),
         itemHoverColor: PropTypes.string,
-        keyboard: PropTypes.bool,
     };
 
     public static defaultProps = { display: true };
@@ -180,7 +178,6 @@ class Menu extends Component<MenuProps, MenuState> {
                     ref: this.setRef.bind(this, index),
                     submenuDisplay: index === this.state.itemActive && this.state.submenuDisplay,
                     onMouseOver: child.props.onMouseOver,
-                    keyboard: false,
                     action: child.props.action,
                     style: { ...this.props.menuItemStyle, ...child.props.style },
                     iconStyle: { ...this.props.menuItemIconStyle, ...child.props.iconStyle },
@@ -204,10 +201,6 @@ class Menu extends Component<MenuProps, MenuState> {
                     props.onMouseOver = onMouseOver;
                 }
 
-                if (!('keyboard' in child.props)) {
-                    props.keyboard = this.props.keyboard || false;
-                }
-
                 if (!('action' in child.props) || !child.props.action) {
                     props.action = this.props.action;
                 }
@@ -217,32 +210,6 @@ class Menu extends Component<MenuProps, MenuState> {
                 return child;
             }
         });
-    }
-
-    public addKeyboardListener(): void {
-        document.addEventListener('keydown', this.handleKeyDown);
-    }
-
-    public removeKeyboardListener(): void {
-        document.removeEventListener('keydown', this.handleKeyDown);
-    }
-
-    public componentDidMount(): void {
-        if (this.props.keyboard) {
-            this.addKeyboardListener();
-        }
-    }
-
-    public componentWillUnmount(): void {
-        this.removeKeyboardListener();
-    }
-
-    public componentDidUpdate(prevProps: MenuProps): void {
-        if (prevProps.keyboard && !this.props.keyboard) {
-            this.removeKeyboardListener();
-        } else if (!prevProps.keyboard && this.props.keyboard) {
-            this.addKeyboardListener();
-        }
     }
 
     public UNSAFE_componentWillUpdate(nextProps: MenuProps): void {
@@ -257,7 +224,6 @@ class Menu extends Component<MenuProps, MenuState> {
 
         delete rest.children;
         delete rest.label;
-        delete rest.keyboard;
         delete rest.action;
         delete rest.className;
         delete rest.menuItemActiveStyle;
