@@ -10,13 +10,36 @@ export interface MenuItemStyles {
     active?: CSSProperties;
 }
 
-export interface MenuBarStyles {
+export interface MenuStyles {
     unorderedlist?: CSSProperties;
-    listitem?: CSSProperties;
+    menuitem?: MenuItemStyles;
 }
 
-export interface MenuStyles {
-    menu?: CSSProperties;
-    menuitem?: MenuItemStyles;
-    menubar?: MenuBarStyles;
+export interface MenubarStyles {
+    unorderedlist?: CSSProperties;
+    listitem?: CSSProperties;
+    menubar?: MenubarStyles;
+    menu?: MenuStyles;
+}
+
+export interface MenuItemClassNames {
+    listitem?: string;
+    icon?: string;
+    disabled?: string;
+    info?: string;
+    label?: string;
+    arrow?: string;
+    active?: string;
+}
+
+export interface MenuClassNames {
+    unorderedlist?: string;
+    menuitem?: string;
+}
+
+export interface MenubarClassNames {
+    unorderedlist?: string;
+    listitem?: string;
+    menubar?: string;
+    menu?: MenuClassNames;
 }

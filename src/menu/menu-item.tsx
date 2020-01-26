@@ -206,12 +206,13 @@ const MenuItem: React.FC<MenuItemProps> = ({
 
     const createSubmenu = (child: React.ReactNode): React.ReactNode | null => {
         if (child && React.isValidElement(child)) {
+            const passStyles: MenuStyles = { ...menuStyles };
+            passStyles.unorderedlist = { ...menuStyles?.unorderedlist, position: 'absolute', ...submenuPosition };
             const props: MenuProps = {
                 display: submenuDisplay,
-                style: { position: 'absolute', ...child.props.style, ...submenuPosition },
                 action: child.props.action,
                 onOffsetChange: onOffsetChange,
-                menuStyles: { ...menuStyles, ...child.props.menuStyles },
+                menuStyles: passStyles,
                 children: child.props.children,
             };
 

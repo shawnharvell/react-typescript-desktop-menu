@@ -1,22 +1,20 @@
 import React, { useState, useCallback, useRef, useEffect } from 'react';
-import { MenuStyles } from './shared';
+import { MenubarStyles } from './shared';
 import styles from './default-styles.module.css';
 import useOnClickOutside from './use-on-click-outside';
 
-interface MenubarProps {
+export interface MenubarProps {
     children: React.ReactNode;
     action?: (tag: string, checked: boolean, event: React.MouseEvent<HTMLLIElement, MouseEvent>) => void;
 
     onSetOpen: (open: boolean) => void;
     isOpen: boolean;
 
-    menuStyles?: MenuStyles;
+    menubarStyles?: MenubarStyles;
 }
 
-const Menubar: React.FC<MenubarProps> = ({ children, action, onSetOpen, isOpen, menuStyles }) => {
+const Menubar: React.FC<MenubarProps> = ({ children, action, onSetOpen, isOpen, menubarStyles }) => {
     const items: React.ReactNode[] = [];
-
-    console.log(styles);
 
     const [menuActive, setMenuActive] = useState(-1);
 
@@ -28,7 +26,6 @@ const Menubar: React.FC<MenubarProps> = ({ children, action, onSetOpen, isOpen, 
     const containerRef = useRef(null);
 
     const clickOutsideHandler = useCallback(() => {
-        console.log('test');
         close();
     }, [close]);
 
@@ -94,7 +91,7 @@ const Menubar: React.FC<MenubarProps> = ({ children, action, onSetOpen, isOpen, 
 
             const props = {
                 display: isOpen && active,
-                menuStyles: { ...menuStyles, ...child.props.menuStyles },
+                menuStyles: { ...menubarStyles?.menu, ...child.props.menuStyles },
                 action: child.props.action,
             };
 
@@ -109,7 +106,7 @@ const Menubar: React.FC<MenubarProps> = ({ children, action, onSetOpen, isOpen, 
                 className += styles['react-menu-bar-menu-bar-item-active'] + ' react-menu-bar-menu-bar-item-active';
             }
 
-            const style = { ...menuStyles?.menubar?.listitem };
+            const style = { ...menubarStyles?.menubar?.listitem };
 
             return (
                 <li
@@ -130,7 +127,7 @@ const Menubar: React.FC<MenubarProps> = ({ children, action, onSetOpen, isOpen, 
     return (
         <ul
             className={styles['react-menu-bar-menu-bar-container'] + ' react-menu-bar-menu-bar-container'}
-            style={{ ...menuStyles?.menubar?.unorderedlist }}
+            style={{ ...menubarStyles?.menubar?.unorderedlist }}
             onMouseDown={handleMouseDown}
             onMouseOut={handleMouseOut}
             ref={containerRef}

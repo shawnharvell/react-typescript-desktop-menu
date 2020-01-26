@@ -10,7 +10,6 @@ const Example: React.FC = props => {
     const [checkboxMenuItemState, setCheckboxMenuItemState] = useState(false);
 
     const handleCheckboxChange = (checked: boolean): void => {
-        console.log(checked);
         setCheckboxMenuItemState(checked);
     };
 
@@ -75,15 +74,7 @@ const Example: React.FC = props => {
         <div id="outer" ref={outerRef}>
             <h2>React Menu Bar Example</h2>
             <div className="menu-bar-container container">
-                <Menubar
-                    // eslint-disable-next-line
-                    // ref={elmt => (menubar = elmt)}
-                    // style={{ border: '1px solid #eee' }}
-                    action={menubarHandler}
-                    isOpen={menuBarIsOpen}
-                    onSetOpen={onMenuBarSetOpen}
-                    {...props}
-                >
+                <Menubar action={menubarHandler} isOpen={menuBarIsOpen} onSetOpen={onMenuBarSetOpen} {...props}>
                     <Menu label="File">
                         <MenuItem tag="simple" label="Simple Item" />
                         <MenuItem tag="txticon" label="Glyph String Icon" icon="fa fa-save" />

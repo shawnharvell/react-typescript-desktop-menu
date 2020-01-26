@@ -1,4 +1,4 @@
-import React, { useState, CSSProperties, useEffect } from 'react';
+import React, { useState, useEffect } from 'react';
 import { MenuItemProps } from './menu-item';
 import { MenuStyles } from './shared';
 import styles from './default-styles.module.css';
@@ -6,7 +6,6 @@ import styles from './default-styles.module.css';
 export interface MenuProps {
     children: React.ReactNode;
     display?: boolean;
-    style?: CSSProperties;
     label?: string | React.ReactNode;
     className?: string;
     action?: (tag: string, checked: boolean, event: React.MouseEvent<HTMLLIElement, MouseEvent>) => void;
@@ -15,7 +14,7 @@ export interface MenuProps {
     menuStyles?: MenuStyles;
 }
 
-const Menu: React.FC<MenuProps> = ({ children, display, style, className, action, onOffsetChange, menuStyles }) => {
+const Menu: React.FC<MenuProps> = ({ children, display, className, action, onOffsetChange, menuStyles }) => {
     const items: React.ReactNode[] = [];
     let delay = 0;
 
@@ -92,7 +91,7 @@ const Menu: React.FC<MenuProps> = ({ children, display, style, className, action
     return (
         <ul
             className={styles['react-menu-bar-menu'] + ' react-menu-bar-menu ' + className}
-            style={{ ...style }}
+            style={{ ...menuStyles?.unorderedlist }}
             ref={(node): void => {
                 if (onOffsetChange && node) {
                     onOffsetChange(node.offsetHeight, node.offsetWidth);
