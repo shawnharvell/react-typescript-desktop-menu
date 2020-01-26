@@ -49,9 +49,7 @@ const Menu: React.FC<MenuProps> = ({ children, display, style, className, action
     };
 
     const renderChildren = (): JSX.Element[] | null | undefined => {
-        let index = -1;
-
-        return React.Children.map<JSX.Element, React.ReactNode>(children, (child: React.ReactNode) => {
+        return React.Children.map<JSX.Element, React.ReactNode>(children, (child: React.ReactNode, index: number) => {
             // I know this looks a bit odd but functionally speaking it would never happen, there are just still
             // some holes in React's typescript awareness that this gets around
             if (!child || child === null) {
@@ -59,8 +57,6 @@ const Menu: React.FC<MenuProps> = ({ children, display, style, className, action
             } else if (!React.isValidElement(child)) {
                 return <React.Fragment>{child}</React.Fragment>;
             }
-
-            index++;
 
             const props = {
                 active: index === itemActive,
