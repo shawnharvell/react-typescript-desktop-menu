@@ -1,31 +1,20 @@
-import React, { CSSProperties, useState, useCallback, useRef, useEffect } from 'react';
+import React, { useState, useCallback, useRef, useEffect } from 'react';
+import { MenuStyles } from './shared';
 import styles from './default-styles.css';
 import useOnClickOutside from './use-on-click-outside';
 
 interface MenubarProps {
     children: React.ReactNode;
-    style?: CSSProperties;
-    childStyle?: CSSProperties;
     action?: (tag: string, checked: boolean, event: React.MouseEvent<HTMLLIElement, MouseEvent>) => void;
 
     onSetOpen: (open: boolean) => void;
     isOpen: boolean;
 
-    menuStyle?: CSSProperties;
-
-    menuItemStyle?: CSSProperties;
-    menuItemIconStyle?: CSSProperties;
-    menuItemDisabledStyle?: CSSProperties;
-    menuItemDisabledActiveStyle?: CSSProperties;
-    menuItemInfoStyle?: CSSProperties;
-    menuItemLabelStyle?: CSSProperties;
-    menuItemArrowStyle?: CSSProperties;
-    menuItemActiveStyle?: CSSProperties;
+    menuStyles?: MenuStyles;
 }
 
-const Menubar: React.FC<MenubarProps> = ({ children, style, childStyle, action, onSetOpen, isOpen, ...rest }) => {
+const Menubar: React.FC<MenubarProps> = ({ children, action, onSetOpen, isOpen, menuStyles }) => {
     const items: React.ReactNode[] = [];
-    // let ul: HTMLUListElement | null = null;
 
     const [menuActive, setMenuActive] = useState(-1);
 
@@ -87,10 +76,6 @@ const Menubar: React.FC<MenubarProps> = ({ children, style, childStyle, action, 
         };
     }, [handleKeyDown]);
 
-    // const setRef = (i: number, elmt: React.ReactNode): void => {
-    //     items[i] = elmt;
-    // };
-
     const renderChildren = (): JSX.Element[] | null | undefined => {
         return React.Children.map<JSX.Element, React.ReactNode>(children, (child: React.ReactNode, index: number) => {
             // I know this looks a bit odd but functionally speaking it would never happen, there are just still
@@ -107,19 +92,8 @@ const Menubar: React.FC<MenubarProps> = ({ children, style, childStyle, action, 
 
             const props = {
                 display: isOpen && active,
-                // ref: (): void => setRef(index, child),
-                style: { ...rest.menuStyle, ...child.props.style },
+                menuStyles: { ...menuStyles, ...child.props.menuStyles },
                 action: child.props.action,
-                menuItemStyle: { ...rest.menuItemStyle, ...child.props.menuItemStyle },
-                menuItemIconStyle: { ...rest.menuItemIconStyle, ...child.props.menuItemIconStyle },
-                menuItemDisabledStyle: {
-                    ...rest.menuItemDisabledStyle,
-                    ...child.props.menuItemDisabledStyle,
-                },
-                menuItemInfoStyle: { ...rest.menuItemInfoStyle, ...child.props.menuItemInfoStyle },
-                menuItemLabelStyle: { ...rest.menuItemLabelStyle, ...child.props.menuItemLabelStyle },
-                menuItemArrowStyle: { ...rest.menuItemArrowStyle, ...child.props.menuItemArrowStyle },
-                menuItemActiveStyle: { ...rest.menuItemActiveStyle, ...child.props.menuItemActiveStyle },
             };
 
             if (!('action' in child.props) || !child.props.action) {
@@ -133,7 +107,7 @@ const Menubar: React.FC<MenubarProps> = ({ children, style, childStyle, action, 
                 className += styles['react-menu-bar-menu-bar-item-active'] + ' react-menu-bar-menu-bar-item-active';
             }
 
-            const style = { ...childStyle };
+            const style = { ...menuStyles?.menubar?.listitem };
 
             return (
                 <li
@@ -153,9 +127,8 @@ const Menubar: React.FC<MenubarProps> = ({ children, style, childStyle, action, 
 
     return (
         <ul
-            {...rest}
             className={styles['react-menu-bar-menu-bar-container'] + ' react-menu-bar-menu-bar-container'}
-            style={{ ...style }}
+            style={{ ...menuStyles?.menubar?.unorderedlist }}
             onMouseDown={handleMouseDown}
             onMouseOut={handleMouseOut}
             ref={containerRef}

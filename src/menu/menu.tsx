@@ -1,6 +1,7 @@
 import React, { useState, CSSProperties, useEffect } from 'react';
 import { MenuItemProps } from './menu-item';
 import styles from './default-styles.css';
+import { MenuStyles } from './shared';
 
 export interface MenuProps {
     children: React.ReactNode;
@@ -11,16 +12,10 @@ export interface MenuProps {
     action?: (tag: string, checked: boolean, event: React.MouseEvent<HTMLLIElement, MouseEvent>) => void;
     onOffsetChange?: (height: number, width: number) => void;
 
-    menuItemStyle?: CSSProperties;
-    menuItemIconStyle?: CSSProperties;
-    menuItemDisabledStyle?: CSSProperties;
-    menuItemInfoStyle?: CSSProperties;
-    menuItemLabelStyle?: CSSProperties;
-    menuItemArrowStyle?: CSSProperties;
-    menuItemActiveStyle?: CSSProperties;
+    menuStyles?: MenuStyles;
 }
 
-const Menu: React.FC<MenuProps> = ({ children, display, style, className, action, onOffsetChange, ...rest }) => {
+const Menu: React.FC<MenuProps> = ({ children, display, style, className, action, onOffsetChange, menuStyles }) => {
     const items: React.ReactNode[] = [];
     let delay = 0;
 
@@ -69,13 +64,7 @@ const Menu: React.FC<MenuProps> = ({ children, display, style, className, action
                 onMouseOver: child.props.onMouseOver,
                 action: child.props.action,
                 tag: child.props.tag,
-                style: { ...rest.menuItemStyle, ...child.props.style },
-                iconStyle: { ...rest.menuItemIconStyle, ...child.props.iconStyle },
-                disabledStyle: { ...rest.menuItemDisabledStyle, ...child.props.disabledStyle },
-                infoStyle: { ...rest.menuItemInfoStyle, ...child.props.infoStyle },
-                labelStyle: { ...rest.menuItemLabelStyle, ...child.props.labelStyle },
-                arrowStyle: { ...rest.menuItemArrowStyle, ...child.props.arrowStyle },
-                activeStyle: { ...rest.menuItemActiveStyle, ...child.props.activeStyle },
+                menuStyles: { ...menuStyles, ...child.props.menuStyles },
             };
 
             if ('onMouseOver' in child.props) {
@@ -96,22 +85,12 @@ const Menu: React.FC<MenuProps> = ({ children, display, style, className, action
         });
     };
 
-    delete rest.label;
-    delete rest.menuItemActiveStyle;
-    delete rest.menuItemArrowStyle;
-    delete rest.menuItemDisabledStyle;
-    delete rest.menuItemIconStyle;
-    delete rest.menuItemInfoStyle;
-    delete rest.menuItemLabelStyle;
-    delete rest.menuItemStyle;
-
     if (!display) {
         return null;
     }
 
     return (
         <ul
-            {...rest}
             className={styles['react-menu-bar-menu'] + ' react-menu-bar-menu ' + className}
             style={{ ...style }}
             ref={(node): void => {

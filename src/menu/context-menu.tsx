@@ -2,6 +2,7 @@ import React, { useRef, useCallback, useEffect } from 'react';
 import styles from './default-styles.css';
 import useContextMenu from './use-context-menu';
 import useOnClickOutside from './use-on-click-outside';
+import { MenuStyles } from './shared';
 
 export interface ContextMenuProps {
     children: React.ReactNode;
@@ -9,9 +10,10 @@ export interface ContextMenuProps {
     outerRef: React.MutableRefObject<null>;
     onSetOpen: (open: boolean) => void;
     isOpen: boolean;
+    menuStyles?: MenuStyles;
 }
 
-const ContextMenu: React.FC<ContextMenuProps> = ({ children, menu, outerRef, onSetOpen, isOpen }) => {
+const ContextMenu: React.FC<ContextMenuProps> = ({ children, menu, outerRef, onSetOpen, isOpen, menuStyles }) => {
     const { xPos, yPos } = useContextMenu(outerRef, onSetOpen);
 
     const containerRef = useRef(null);
