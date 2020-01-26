@@ -13,27 +13,27 @@ const Example: React.FC = props => {
     const [contextMenuIsOpen, setContextMenuIsOpen] = useState(false);
     const [menuBarIsOpen, setMenuBarIsOpen] = useState(false);
 
-    const menubarHandler = (tag: string, checked: boolean, e: React.MouseEvent<HTMLLIElement, MouseEvent>): void => {
-        console.log('menubarHandler', tag, checked, e);
-        //this.menubar?.close();
-    };
-
-    const menuHandler = (tag: string, checked: boolean, e: React.MouseEvent<HTMLLIElement, MouseEvent>): void => {
-        console.log('menuHandler', tag, checked, e);
-        //this.menubar?.close();
-    };
-
-    const menuitemHandler = (tag: string, checked: boolean, e: React.MouseEvent<HTMLLIElement, MouseEvent>): void => {
-        console.log('menuitemHandler', tag, checked, e);
-        //this.menubar?.close();
-    };
-
     const onMenuBarSetOpen = (open: boolean): void => {
         setMenuBarIsOpen(open);
     };
 
     const onContextMenuSetOpen = (open: boolean): void => {
         setContextMenuIsOpen(open);
+    };
+
+    const menubarHandler = (tag: string, checked: boolean, e: React.MouseEvent<HTMLLIElement, MouseEvent>): void => {
+        console.log('menubarHandler', tag, checked, e);
+        onMenuBarSetOpen(false);
+    };
+
+    const menuHandler = (tag: string, checked: boolean, e: React.MouseEvent<HTMLLIElement, MouseEvent>): void => {
+        console.log('menuHandler', tag, checked, e);
+        onMenuBarSetOpen(false);
+    };
+
+    const menuitemHandler = (tag: string, checked: boolean, e: React.MouseEvent<HTMLLIElement, MouseEvent>): void => {
+        console.log('menuitemHandler', tag, checked, e);
+        onMenuBarSetOpen(false);
     };
 
     const contextmenuHandler = (

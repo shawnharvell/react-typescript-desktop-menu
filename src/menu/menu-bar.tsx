@@ -80,9 +80,9 @@ const Menubar: React.FC<MenubarProps> = ({ children, style, childStyle, action, 
         };
     }, [handleKeyDown]);
 
-    const setRef = (i: number, elmt: React.ReactNode): void => {
-        items[i] = elmt;
-    };
+    // const setRef = (i: number, elmt: React.ReactNode): void => {
+    //     items[i] = elmt;
+    // };
 
     const renderChildren = (): JSX.Element[] | null | undefined => {
         return React.Children.map<JSX.Element, React.ReactNode>(children, (child: React.ReactNode, index: number) => {
@@ -93,6 +93,8 @@ const Menubar: React.FC<MenubarProps> = ({ children, style, childStyle, action, 
             } else if (!React.isValidElement(child)) {
                 return <React.Fragment>{child}</React.Fragment>;
             }
+
+            items[index] = child;
 
             const active = menuActive === index;
 
@@ -149,9 +151,6 @@ const Menubar: React.FC<MenubarProps> = ({ children, style, childStyle, action, 
             style={{ ...style }}
             onMouseDown={handleMouseDown}
             onMouseOut={handleMouseOut}
-            // ref={(node): void => {
-            //     ul = node;
-            // }}
         >
             {renderChildren()}
         </ul>

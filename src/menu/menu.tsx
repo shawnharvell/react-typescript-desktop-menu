@@ -1,13 +1,15 @@
-import React, { useState, CSSProperties } from 'react';
+import React, { useState, CSSProperties, useEffect } from 'react';
+import { MenuItemProps } from './menu-item';
 import styles from './default-styles.css';
 
-interface MenuProps {
+export interface MenuProps {
     children: React.ReactNode;
     display?: boolean;
     style?: CSSProperties;
     label?: string | React.ReactNode;
     className?: string;
     action?: (tag: string, checked: boolean, event: React.MouseEvent<HTMLLIElement, MouseEvent>) => void;
+    onOffsetChange?: (height: number, width: number) => void;
 
     menuItemStyle?: CSSProperties;
     menuItemIconStyle?: CSSProperties;
@@ -18,13 +20,18 @@ interface MenuProps {
     menuItemActiveStyle?: CSSProperties;
 }
 
-const Menu: React.FC<MenuProps> = ({ children, display, style, className, action, ...rest }) => {
+const Menu: React.FC<MenuProps> = ({ children, display, style, className, action, onOffsetChange, ...rest }) => {
     const items: React.ReactNode[] = [];
     let delay = 0;
-    // let ul: HTMLUListElement | null = null;
 
     const [itemActive, setItemActive] = useState(-1);
     const [submenuDisplay, setSubmenuDisplay] = useState(false);
+
+    useEffect(() => {
+        if (!display) {
+            setItemActive(-1);
+        }
+    }, [display]);
 
     const handleMouseOver = (i: number): void => {
         if (i !== itemActive) {
@@ -44,10 +51,6 @@ const Menu: React.FC<MenuProps> = ({ children, display, style, className, action
         }
     };
 
-    const setRef = (i: number, elmt: React.ReactNode): void => {
-        items[i] = elmt;
-    };
-
     const renderChildren = (): JSX.Element[] | null | undefined => {
         return React.Children.map<JSX.Element, React.ReactNode>(children, (child: React.ReactNode, index: number) => {
             // I know this looks a bit odd but functionally speaking it would never happen, there are just still
@@ -58,12 +61,14 @@ const Menu: React.FC<MenuProps> = ({ children, display, style, className, action
                 return <React.Fragment>{child}</React.Fragment>;
             }
 
-            const props = {
+            items[index] = child;
+
+            const props: MenuItemProps = {
                 active: index === itemActive,
-                // ref: (): void => setRef(index, child),
                 submenuDisplay: index === itemActive && submenuDisplay,
                 onMouseOver: child.props.onMouseOver,
                 action: child.props.action,
+                tag: child.props.tag,
                 style: { ...rest.menuItemStyle, ...child.props.style },
                 iconStyle: { ...rest.menuItemIconStyle, ...child.props.iconStyle },
                 disabledStyle: { ...rest.menuItemDisabledStyle, ...child.props.disabledStyle },
@@ -73,12 +78,10 @@ const Menu: React.FC<MenuProps> = ({ children, display, style, className, action
                 activeStyle: { ...rest.menuItemActiveStyle, ...child.props.activeStyle },
             };
 
-            // const onMouseOver: (index: number) => void = (index) => handleMouseOver(index);
-
             if ('onMouseOver' in child.props) {
                 const ownMouseOver = child.props.onMouseOver;
-                props.onMouseOver = (e: any): void => {
-                    ownMouseOver(e);
+                props.onMouseOver = (e: React.MouseEvent<Element, MouseEvent>): void => {
+                    ownMouseOver && ownMouseOver(e);
                     handleMouseOver(index);
                 };
             } else {
@@ -91,12 +94,6 @@ const Menu: React.FC<MenuProps> = ({ children, display, style, className, action
 
             return React.cloneElement(child, props);
         });
-    };
-
-    const UNSAFE_componentWillUpdate = (nextProps: MenuProps): void => {
-        if (!display && nextProps.display) {
-            setItemActive(-1);
-        }
     };
 
     delete rest.label;
@@ -117,9 +114,11 @@ const Menu: React.FC<MenuProps> = ({ children, display, style, className, action
             {...rest}
             className={styles['react-menu-bar-menu'] + ' react-menu-bar-menu ' + className}
             style={{ ...style }}
-            // ref={(node): void => {
-            //     ul = node;
-            // }}
+            ref={(node): void => {
+                if (onOffsetChange && node) {
+                    onOffsetChange(node.offsetHeight, node.offsetWidth);
+                }
+            }}
         >
             {renderChildren()}
         </ul>
