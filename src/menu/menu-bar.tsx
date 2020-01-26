@@ -1,22 +1,22 @@
 import React, { useState, useCallback, useRef, useEffect } from 'react';
-import { MenuStyles } from './shared';
+import { MenubarStyles, MenubarClassNames } from './shared';
 import styles from './default-styles.module.css';
 import useOnClickOutside from './use-on-click-outside';
+import { MenuProps } from './menu';
 
-interface MenubarProps {
+export interface MenubarProps {
     children: React.ReactNode;
     action?: (tag: string, checked: boolean, event: React.MouseEvent<HTMLLIElement, MouseEvent>) => void;
 
     onSetOpen: (open: boolean) => void;
     isOpen: boolean;
 
-    menuStyles?: MenuStyles;
+    menubarStyles?: MenubarStyles;
+    menubarClassNames?: MenubarClassNames;
 }
 
-const Menubar: React.FC<MenubarProps> = ({ children, action, onSetOpen, isOpen, menuStyles }) => {
+const Menubar: React.FC<MenubarProps> = ({ children, action, onSetOpen, isOpen, menubarStyles, menubarClassNames }) => {
     const items: React.ReactNode[] = [];
-
-    console.log(styles);
 
     const [menuActive, setMenuActive] = useState(-1);
 
@@ -28,7 +28,6 @@ const Menubar: React.FC<MenubarProps> = ({ children, action, onSetOpen, isOpen, 
     const containerRef = useRef(null);
 
     const clickOutsideHandler = useCallback(() => {
-        console.log('test');
         close();
     }, [close]);
 
@@ -92,9 +91,10 @@ const Menubar: React.FC<MenubarProps> = ({ children, action, onSetOpen, isOpen, 
 
             const active = menuActive === index;
 
-            const props = {
+            const props: MenuProps = {
                 display: isOpen && active,
-                menuStyles: { ...menuStyles, ...child.props.menuStyles },
+                menuStyles: { ...menubarStyles?.menu, ...child.props.menuStyles },
+                menuClassNames: { ...menubarClassNames?.menu, ...child.props.menuClassNames },
                 action: child.props.action,
             };
 
@@ -104,12 +104,21 @@ const Menubar: React.FC<MenubarProps> = ({ children, action, onSetOpen, isOpen, 
 
             const menu = React.cloneElement(child, props);
 
-            let className = styles['react-menu-bar-menu-bar-item'] + ' react-menu-bar-menu-bar-item ';
-            if (active) {
-                className += styles['react-menu-bar-menu-bar-item-active'] + ' react-menu-bar-menu-bar-item-active';
-            }
+            let className =
+                styles['react-menu-bar-menu-bar-item'] +
+                ' react-menu-bar-menu-bar-item ' +
+                (menubarClassNames?.listitem || '');
 
-            const style = { ...menuStyles?.menubar?.listitem };
+            let style = { ...menubarStyles?.listitem };
+
+            if (active) {
+                className +=
+                    styles['react-menu-bar-menu-bar-item-active'] +
+                    ' react-menu-bar-menu-bar-item-active ' +
+                    (menubarClassNames?.activeListitem || '');
+
+                style = { ...style, ...menubarStyles?.activeListitem };
+            }
 
             return (
                 <li
@@ -118,6 +127,7 @@ const Menubar: React.FC<MenubarProps> = ({ children, action, onSetOpen, isOpen, 
                     onMouseOver={(): void => handleMouseOver(index)}
                     tabIndex={index + 1}
                     data-ordinal={index}
+                    key={`menu-bar-item-${index}`}
                 >
                     {child.props.label}
                     <br />
@@ -129,8 +139,12 @@ const Menubar: React.FC<MenubarProps> = ({ children, action, onSetOpen, isOpen, 
 
     return (
         <ul
-            className={styles['react-menu-bar-menu-bar-container'] + ' react-menu-bar-menu-bar-container'}
-            style={{ ...menuStyles?.menubar?.unorderedlist }}
+            className={
+                styles['react-menu-bar-menu-bar-container'] +
+                ' react-menu-bar-menu-bar-container ' +
+                (menubarClassNames?.unorderedlist || '')
+            }
+            style={{ ...menubarStyles?.unorderedlist }}
             onMouseDown={handleMouseDown}
             onMouseOut={handleMouseOut}
             ref={containerRef}

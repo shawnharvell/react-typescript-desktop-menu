@@ -1,6 +1,6 @@
 import React, { CSSProperties, useState, useRef, useEffect } from 'react';
 import { MenuProps } from './menu';
-import { MenuStyles } from './shared';
+import { MenuStyles, MenuClassNames } from './shared';
 import styles from './default-styles.module.css';
 
 export interface MenuItemProps {
@@ -21,6 +21,7 @@ export interface MenuItemProps {
     submenuDisplay?: boolean;
 
     menuStyles?: MenuStyles;
+    menuClassNames?: MenuClassNames;
 
     tag: string;
 }
@@ -42,6 +43,7 @@ const MenuItem: React.FC<MenuItemProps> = ({
     submenuDisplay,
     tag,
     menuStyles,
+    menuClassNames,
 }) => {
     const myself = useRef<HTMLLIElement>(null);
 
@@ -108,21 +110,32 @@ const MenuItem: React.FC<MenuItemProps> = ({
     };
 
     const getClassnames = (): string => {
-        let classNames = styles['react-menu-bar-menu-item-container'] + ' react-menu-bar-menu-item-container ';
+        let classNames =
+            styles['react-menu-bar-menu-item-container'] +
+            ' react-menu-bar-menu-item-container ' +
+            (menuClassNames?.menuitem?.listitem || '');
 
         if (active && !disabled) {
             classNames +=
-                styles['react-menu-bar-menu-item-container-active'] + ' react-menu-bar-menu-item-container-active ';
+                ' ' +
+                styles['react-menu-bar-menu-item-container-active'] +
+                ' react-menu-bar-menu-item-container-active ' +
+                (menuClassNames?.menuitem?.listitemActive || '');
         } else if (disabled) {
             classNames +=
-                styles['react-menu-bar-menu-item-container-disabled'] + ' react-menu-bar-menu-item-container-disabled ';
+                ' ' +
+                styles['react-menu-bar-menu-item-container-disabled'] +
+                ' react-menu-bar-menu-item-container-disabled ' +
+                (menuClassNames?.menuitem?.listitemDisabled || '');
         }
-
         return classNames;
     };
 
     const createLabel = (): JSX.Element | null => {
-        const className = styles['react-menu-bar-menu-item-label'] + ' react-menu-bar-menu-item-label';
+        const className =
+            styles['react-menu-bar-menu-item-label'] +
+            ' react-menu-bar-menu-item-label ' +
+            (menuClassNames?.menuitem?.label || '');
 
         if (React.isValidElement(label)) {
             return React.cloneElement(label, {
@@ -156,12 +169,23 @@ const MenuItem: React.FC<MenuItemProps> = ({
     };
 
     const createIcon = (): JSX.Element => {
-        let className = styles['react-menu-bar-menu-item-icon'] + ' react-menu-bar-menu-item-icon';
+        let className =
+            styles['react-menu-bar-menu-item-icon'] +
+            ' react-menu-bar-menu-item-icon' +
+            menuClassNames?.menuitem?.icon +
+            ' ';
 
         if (checkbox) {
-            className += styles['react-menu-bar-menu-item-checkbox'] + ' react-menu-bar-menu-item-checkbox';
+            className +=
+                ' ' +
+                styles['react-menu-bar-menu-item-checkbox'] +
+                ' react-menu-bar-menu-item-checkbox ' +
+                menuClassNames?.menuitem?.checkbox;
             return (
-                <span className={className} style={menuStyles?.menuitem?.icon}>
+                <span
+                    className={className}
+                    style={{ ...menuStyles?.menuitem?.icon, ...menuStyles?.menuitem?.checkbox }}
+                >
                     {checked ? '☑' : '☐'}
                 </span>
             );
@@ -183,7 +207,10 @@ const MenuItem: React.FC<MenuItemProps> = ({
     };
 
     const createInfo = (): JSX.Element | null => {
-        const className = styles['react-menu-bar-menu-item-info'] + ' react-menu-bar-menu-item-info';
+        const className =
+            styles['react-menu-bar-menu-item-info'] +
+            ' react-menu-bar-menu-item-info ' +
+            (menuStyles?.menuitem?.info || '');
 
         if (React.isValidElement(info)) {
             return React.cloneElement(info, {
@@ -206,13 +233,15 @@ const MenuItem: React.FC<MenuItemProps> = ({
 
     const createSubmenu = (child: React.ReactNode): React.ReactNode | null => {
         if (child && React.isValidElement(child)) {
+            const passStyles: MenuStyles = { ...menuStyles };
+            passStyles.unorderedlist = { ...menuStyles?.unorderedlist, position: 'absolute', ...submenuPosition };
             const props: MenuProps = {
                 display: submenuDisplay,
-                style: { position: 'absolute', ...child.props.style, ...submenuPosition },
                 action: child.props.action,
                 onOffsetChange: onOffsetChange,
-                menuStyles: { ...menuStyles, ...child.props.menuStyles },
+                menuStyles: passStyles,
                 children: child.props.children,
+                menuClassNames: menuClassNames,
             };
 
             if (!('action' in child.props) || !child.props.action) {
@@ -252,7 +281,9 @@ const MenuItem: React.FC<MenuItemProps> = ({
     const renderSubmenu = (): JSX.Element | null => {
         if (hasSubmenu()) {
             const className =
-                styles['react-menu-bar-menu-item-submenu-arrow'] + ' react-menu-bar-menu-item-submenu-arrow';
+                styles['react-menu-bar-menu-item-submenu-arrow'] +
+                ' react-menu-bar-menu-item-submenu-arrow ' +
+                (menuStyles?.menuitem?.arrow || '');
             return (
                 <span className={className} style={menuStyles?.menuitem?.arrow}>
                     &#9656;

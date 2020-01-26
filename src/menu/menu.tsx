@@ -1,21 +1,20 @@
-import React, { useState, CSSProperties, useEffect } from 'react';
+import React, { useState, useEffect } from 'react';
 import { MenuItemProps } from './menu-item';
-import { MenuStyles } from './shared';
+import { MenuStyles, MenuClassNames } from './shared';
 import styles from './default-styles.module.css';
 
 export interface MenuProps {
-    children: React.ReactNode;
+    children?: React.ReactNode;
     display?: boolean;
-    style?: CSSProperties;
     label?: string | React.ReactNode;
-    className?: string;
     action?: (tag: string, checked: boolean, event: React.MouseEvent<HTMLLIElement, MouseEvent>) => void;
     onOffsetChange?: (height: number, width: number) => void;
 
     menuStyles?: MenuStyles;
+    menuClassNames?: MenuClassNames;
 }
 
-const Menu: React.FC<MenuProps> = ({ children, display, style, className, action, onOffsetChange, menuStyles }) => {
+const Menu: React.FC<MenuProps> = ({ children, display, action, onOffsetChange, menuStyles, menuClassNames }) => {
     const items: React.ReactNode[] = [];
     let delay = 0;
 
@@ -91,8 +90,8 @@ const Menu: React.FC<MenuProps> = ({ children, display, style, className, action
 
     return (
         <ul
-            className={styles['react-menu-bar-menu'] + ' react-menu-bar-menu ' + className}
-            style={{ ...style }}
+            className={styles['react-menu-bar-menu'] + ' react-menu-bar-menu ' + menuClassNames?.unorderedlist}
+            style={{ ...menuStyles?.unorderedlist }}
             ref={(node): void => {
                 if (onOffsetChange && node) {
                     onOffsetChange(node.offsetHeight, node.offsetWidth);
