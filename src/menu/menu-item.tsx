@@ -9,7 +9,8 @@ export interface MenuItemProps {
     disabled?: boolean;
     action?: (tag: string, checked: boolean, event: React.MouseEvent<HTMLLIElement, MouseEvent>) => void;
     checkbox?: boolean;
-    defaultChecked?: boolean;
+    checked?: boolean;
+    onSetChecked?: (checked: boolean) => void;
     shortcut?: string;
 
     style?: CSSProperties;
@@ -35,7 +36,8 @@ const MenuItem: React.FC<MenuItemProps> = ({
     disabled = false,
     action,
     checkbox = false,
-    defaultChecked = false,
+    checked = false,
+    onSetChecked,
     shortcut,
     children,
     onMouseOver,
@@ -47,7 +49,6 @@ const MenuItem: React.FC<MenuItemProps> = ({
 }) => {
     const myself = useRef<HTMLLIElement>(null);
 
-    const [checked, setChecked] = useState(defaultChecked);
     const [submenuPosition, setSubmenuPosition] = useState({ left: 0, top: 0 });
     const [submenuOffset, setSubmenuOffset] = useState({ height: 0, width: 0 });
 
@@ -81,13 +82,21 @@ const MenuItem: React.FC<MenuItemProps> = ({
             return;
         }
 
-        setChecked(!checked);
+        const newCheckedValue = !checked;
 
-        action && action(tag || 'notagspecified', !checked, e);
+        if (checkbox) {
+            onSetChecked && onSetChecked(!checked);
+        }
+
+        action && action(tag || 'notagspecified', newCheckedValue, e);
     };
 
     const handleMouseOver = (e: React.MouseEvent): void => {
         onMouseOver && onMouseOver(e);
+    };
+
+    const handleMouseOut = (e: React.MouseEvent): void => {
+        onMouseOut && onMouseOut(e);
     };
 
     const getStyle = (): CSSProperties => {
@@ -270,7 +279,7 @@ const MenuItem: React.FC<MenuItemProps> = ({
             ref={myself}
             style={getStyle()}
             onMouseOver={handleMouseOver}
-            onMouseOut={onMouseOut}
+            onMouseOut={handleMouseOut}
             onClick={!hasSubmenu() && action ? handleAction : undefined}
         >
             {createIcon()}

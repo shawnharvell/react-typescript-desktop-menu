@@ -5,13 +5,14 @@ import './index.css';
 
 const Example: React.FC = props => {
     const outerRef = useRef(null);
-    // let myMenubar: Menubar = useRef(null);
-
-    // menubar: any = null;
-    // contextmenu = React.forwardRef();
-
     const [contextMenuIsOpen, setContextMenuIsOpen] = useState(false);
     const [menuBarIsOpen, setMenuBarIsOpen] = useState(false);
+    const [checkboxMenuItemState, setCheckboxMenuItemState] = useState(false);
+
+    const handleCheckboxChange = (checked: boolean): void => {
+        console.log(checked);
+        setCheckboxMenuItemState(checked);
+    };
 
     const onMenuBarSetOpen = (open: boolean): void => {
         setMenuBarIsOpen(open);
@@ -45,14 +46,23 @@ const Example: React.FC = props => {
         onContextMenuSetOpen(false);
     };
 
-    const menu = (
-        <Menu label="File" action={contextmenuHandler}>
+    const contextmenuSubmenuHandler = (
+        tag: string,
+        checked: boolean,
+        e: React.MouseEvent<HTMLLIElement, MouseEvent>,
+    ): void => {
+        console.log('contextmenuSubmenuHandler', tag, checked, e);
+        onContextMenuSetOpen(false);
+    };
+
+    const contextMenu = (
+        <Menu label="File" action={contextmenuHandler} display={true}>
             <MenuItem tag="simple" label="Simple item" />
             <MenuItem tag="icon" icon={<i className="fa fa-bell" />} label="Item with icon" />
             <MenuItem tag="anyicon" icon={<img src="icon.svg" alt="" />} label="Item with any kind of icon" />
             <Divider />
             <MenuItem tag="submenu" icon={<i className="fa fa-bar-chart" />} label="Submenu">
-                <Menu action={menuHandler}>
+                <Menu action={contextmenuSubmenuHandler}>
                     <MenuItem tag="simple" label="Simple item" />
                     <MenuItem tag="icon" icon={<i className="fa fa-bell" />} label="Item with icon" />
                     <MenuItem tag="anyicon" icon={<img src="icon.svg" alt="" />} label="Item with any kind of icon" />
@@ -74,20 +84,25 @@ const Example: React.FC = props => {
                     onSetOpen={onMenuBarSetOpen}
                     {...props}
                 >
-                    <Menu label="Icons">
+                    <Menu label="File">
                         <MenuItem tag="simple" label="Simple Item" />
-                        <MenuItem tag="txticon" label="String Icon" icon="fa fa-save" />
+                        <MenuItem tag="txticon" label="Glyph String Icon" icon="fa fa-save" />
                         <MenuItem tag="jsxicon" icon={<i className="fa fa-bell" />} label="JSX Icon" />
                         <MenuItem tag="anyicon" icon={<img src="icon.svg" alt="" />} label="Image Icon" />
                         <Divider />
-                        <MenuItem tag="customhover" label="Custom hover color" />
-                        <MenuItem tag="checkbox" checkbox>
+                        <MenuItem
+                            tag="customhover"
+                            label="Custom hover color"
+                            activeStyle={{ backgroundColor: 'pink' }}
+                        />
+                        <MenuItem
+                            tag="checkbox"
+                            checkbox
+                            checked={checkboxMenuItemState}
+                            onSetChecked={handleCheckboxChange}
+                        >
                             {' '}
                             Item as a checkbox{' '}
-                        </MenuItem>
-                        <MenuItem tag="checkboxdefaultchecked" checkbox defaultChecked>
-                            {' '}
-                            Item as a checkbox checked{' '}
                         </MenuItem>
                         <MenuItem
                             tag="shortcut"
@@ -100,28 +115,20 @@ const Example: React.FC = props => {
                         <MenuItem tag="submenu" icon={<i className="fa fa-bar-chart" />} label="Submenu">
                             <Menu>
                                 <MenuItem tag="simple" label="Simple item" />
-                                <MenuItem tag="icon" icon={<i className="fa fa-bell" />} label="Item with icon" />
-                                <MenuItem
-                                    tag="anyicon"
-                                    icon={<img src="icon.svg" alt="" />}
-                                    label="Item with any kind of icon"
-                                />
+                                <MenuItem tag="icon" icon={<i className="fa fa-bell" />} label="JSX icon" />
+                                <MenuItem tag="anyicon" icon={<img src="icon.svg" alt="" />} label="JSX Icon" />
                             </Menu>
                         </MenuItem>
                     </Menu>
                     <Menu label="Edit" action={menuHandler}>
                         <MenuItem tag="simple" label="Disabled item" disabled />
-                        <MenuItem tag="icon" icon={<i className="fa fa-bell" />} label="Item with icon" />
-                        <MenuItem
-                            tag="anyicon"
-                            icon={<img src="icon.svg" alt="" />}
-                            label="Item with any kind of icon"
-                        />
+                        <MenuItem tag="icon" icon={<i className="fa fa-bell" />} label="JSX Glyph Icon" />
+                        <MenuItem tag="anyicon" icon={<img src="icon.svg" alt="" />} label="JSX Icon" />
                         <Divider />
-                        <MenuItem tag="submenu" icon={<i className="fa fa-bar-chart" />} label="Submenu">
+                        <MenuItem tag="submenu" icon={<i className="fa fa-bar-chart" />} label="Submenu w/JSX Icon">
                             <Menu>
                                 <MenuItem tag="simple" label="Simple item" />
-                                <MenuItem tag="icon" icon={<i className="fa fa-bell" />} label="Item with icon" />
+                                <MenuItem tag="icon" icon={<i className="fa fa-bell" />} label="Item with glyph icon" />
                                 <MenuItem
                                     tag="anyicon"
                                     icon={<img src="icon.svg" alt="" />}
@@ -132,7 +139,7 @@ const Example: React.FC = props => {
                     </Menu>
                     <Menu label="View">
                         <MenuItem tag="simple" label="Simple item" />
-                        <MenuItem tag="icon" icon={<i className="fa fa-bell" />} label="Item with icon" />
+                        <MenuItem tag="icon" icon={<i className="fa fa-bell" />} label="Item with glyph icon" />
                         <MenuItem
                             tag="anyicon"
                             icon={<img src="icon.svg" alt="" />}
@@ -142,7 +149,7 @@ const Example: React.FC = props => {
                         <MenuItem tag="submenu" icon={<i className="fa fa-bar-chart" />} label="Submenu">
                             <Menu>
                                 <MenuItem tag="simple" label="Simple item" />
-                                <MenuItem tag="icon" icon={<i className="fa fa-bell" />} label="Item with icon" />
+                                <MenuItem tag="icon" icon={<i className="fa fa-bell" />} label="Item with glyph icon" />
                                 <MenuItem
                                     action={menuitemHandler}
                                     tag="anyicon"
@@ -155,7 +162,7 @@ const Example: React.FC = props => {
                 </Menubar>
             </div>
             <ContextMenu
-                menu={menu}
+                menu={contextMenu}
                 outerRef={outerRef}
                 isOpen={contextMenuIsOpen}
                 onSetOpen={onContextMenuSetOpen}

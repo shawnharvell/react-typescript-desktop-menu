@@ -37,10 +37,17 @@ const Menubar: React.FC<MenubarProps> = ({ children, style, childStyle, action, 
     const containerRef = useRef(null);
 
     const clickOutsideHandler = useCallback(() => {
+        console.log('test');
         close();
     }, [close]);
 
     useOnClickOutside(containerRef, clickOutsideHandler);
+
+    useEffect(() => {
+        if (!isOpen) {
+            setMenuActive(-1);
+        }
+    }, [isOpen]);
 
     const handleMouseDown = (): void => {
         onSetOpen && onSetOpen(true);
@@ -151,6 +158,7 @@ const Menubar: React.FC<MenubarProps> = ({ children, style, childStyle, action, 
             style={{ ...style }}
             onMouseDown={handleMouseDown}
             onMouseOut={handleMouseOut}
+            ref={containerRef}
         >
             {renderChildren()}
         </ul>
