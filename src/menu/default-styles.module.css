@@ -8,7 +8,7 @@
     position: absolute;
     background-color: white;
     border: 1px solid gray;
-    border-radius: 2;
+    border-radius: 2px;
     box-shadow: 2px 1px 1px gray;
     list-style: none;
     padding: 3px 0px;
@@ -48,29 +48,34 @@
 }
 
 .react-menu-bar-menu-item-submenu-arrow {
-    font-size: 20px;
+    font-size: 23px;
 }
 
 .react-menu-bar-menu-item-info {
+    padding-left: 50px;
     color: gray;
 }
 
 .react-menu-bar-menu-item-label {
-    margin-right: 15;
+    margin-right: 15px;
     flex: 1;
 }
 
 .react-menu-bar-menu-item-icon {
     width: 16px;
-    margin-right: 5px;
+    margin-right: 7px;
+    margin-left: 7px;
     color: black;
+    font-size: 1.2em;
 }
 
 .react-menu-bar-menu-item-container {
     margin: 0;
     white-space: nowrap;
     line-height: 140%;
-    padding: 2px 5px;
+    padding-top: 2px;
+    padding-right: 5px;
+    padding-bottom: 5px;
     cursor: default;
     display: flex;
     align-items: center;

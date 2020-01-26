@@ -1,6 +1,7 @@
 import React, { CSSProperties, useState, useRef, useEffect } from 'react';
 import { MenuProps } from './menu';
-import styles from './default-styles.css';
+import { MenuStyles } from './shared';
+import styles from './default-styles.module.css';
 
 export interface MenuItemProps {
     icon?: string | React.ReactNode;
@@ -13,18 +14,13 @@ export interface MenuItemProps {
     onSetChecked?: (checked: boolean) => void;
     shortcut?: string;
 
-    style?: CSSProperties;
-    iconStyle?: CSSProperties;
-    disabledStyle?: CSSProperties;
-    infoStyle?: CSSProperties;
-    labelStyle?: CSSProperties;
-    arrowStyle?: CSSProperties;
-    activeStyle?: CSSProperties;
     children?: React.ReactNode;
     onMouseOver?: (e: React.MouseEvent) => void;
     onMouseOut?: (e: React.MouseEvent) => void;
     active?: boolean;
     submenuDisplay?: boolean;
+
+    menuStyles?: MenuStyles;
 
     tag: string;
 }
@@ -45,7 +41,7 @@ const MenuItem: React.FC<MenuItemProps> = ({
     active,
     submenuDisplay,
     tag,
-    ...rest
+    menuStyles,
 }) => {
     const myself = useRef<HTMLLIElement>(null);
 
@@ -67,7 +63,7 @@ const MenuItem: React.FC<MenuItemProps> = ({
             }
             setSubmenuPosition({ left, top });
         }
-    }, [submenuDisplay]);
+    }, [submenuDisplay, submenuOffset.height, submenuOffset.width]);
 
     const onOffsetChange = (height: number, width: number): void => {
         if (height !== submenuOffset.height || width !== submenuOffset.width) {
@@ -100,15 +96,15 @@ const MenuItem: React.FC<MenuItemProps> = ({
     };
 
     const getStyle = (): CSSProperties => {
-        let stateStyle: CSSProperties = { ...rest.style };
+        let stateStyle: CSSProperties = { ...menuStyles?.menuitem?.listitem };
 
         if (active && !disabled) {
-            stateStyle = { ...stateStyle, ...rest.activeStyle };
+            stateStyle = { ...stateStyle, ...menuStyles?.menuitem?.active };
         } else if (disabled) {
-            stateStyle = { ...stateStyle, ...rest.disabledStyle };
+            stateStyle = { ...stateStyle, ...menuStyles?.menuitem?.disabled };
         }
 
-        return { ...stateStyle, ...rest.style };
+        return stateStyle;
     };
 
     const getClassnames = (): string => {
@@ -132,7 +128,7 @@ const MenuItem: React.FC<MenuItemProps> = ({
             return React.cloneElement(label, {
                 className,
                 style: {
-                    ...rest.labelStyle,
+                    ...menuStyles?.menuitem?.label,
                     ...label.props.style,
                 },
             });
@@ -141,7 +137,7 @@ const MenuItem: React.FC<MenuItemProps> = ({
                 const index = label.toLowerCase().indexOf(shortcut.toLowerCase());
 
                 return (
-                    <span className={className} style={rest.labelStyle}>
+                    <span className={className} style={menuStyles?.menuitem?.label}>
                         {label.slice(0, index)}
                         <u>{label.slice(index, index + 1)}</u>
                         {label.slice(index + 1)}
@@ -149,7 +145,7 @@ const MenuItem: React.FC<MenuItemProps> = ({
                 );
             } else {
                 return (
-                    <span className={className} style={rest.labelStyle}>
+                    <span className={className} style={menuStyles?.menuitem?.label}>
                         {label}
                     </span>
                 );
@@ -165,24 +161,24 @@ const MenuItem: React.FC<MenuItemProps> = ({
         if (checkbox) {
             className += styles['react-menu-bar-menu-item-checkbox'] + ' react-menu-bar-menu-item-checkbox';
             return (
-                <span className={className} style={rest.iconStyle}>
+                <span className={className} style={menuStyles?.menuitem?.icon}>
                     {checked ? '☑' : '☐'}
                 </span>
             );
         } else if (typeof icon === 'string') {
             className += ' ' + icon;
-            return <i className={className} style={rest.iconStyle} />;
+            return <i className={className} style={menuStyles?.menuitem?.icon} />;
         } else if (React.isValidElement(icon)) {
             className += ' ' + icon.props.className;
             return React.cloneElement(icon, {
                 className,
                 style: {
-                    ...rest.iconStyle,
+                    ...menuStyles?.menuitem?.icon,
                     ...icon.props.style,
                 },
             });
         } else {
-            return <span className={className} style={rest.iconStyle} />;
+            return <span className={className} style={menuStyles?.menuitem?.icon} />;
         }
     };
 
@@ -193,13 +189,13 @@ const MenuItem: React.FC<MenuItemProps> = ({
             return React.cloneElement(info, {
                 className,
                 style: {
-                    ...rest.infoStyle,
+                    ...menuStyles?.menuitem?.info,
                     ...info.props.style,
                 },
             });
         } else if (typeof info === 'string') {
             return (
-                <span className={className} style={rest.infoStyle}>
+                <span className={className} style={menuStyles?.menuitem?.info}>
                     {info}
                 </span>
             );
@@ -215,13 +211,7 @@ const MenuItem: React.FC<MenuItemProps> = ({
                 style: { position: 'absolute', ...child.props.style, ...submenuPosition },
                 action: child.props.action,
                 onOffsetChange: onOffsetChange,
-                menuItemStyle: { ...rest.style, ...child.props.menuItemStyle },
-                menuItemIconStyle: { ...rest.iconStyle, ...child.props.menuItemIconStyle },
-                menuItemDisabledStyle: { ...rest.disabledStyle, ...child.props.menuItemDisabledStyle },
-                menuItemInfoStyle: { ...rest.infoStyle, ...child.props.menuItemInfoStyle },
-                menuItemLabelStyle: { ...rest.labelStyle, ...child.props.menuItemLabelStyle },
-                menuItemArrowStyle: { ...rest.arrowStyle, ...child.props.menuItemArrowStyle },
-                menuItemActiveStyle: { ...rest.activeStyle, ...child.props.menuItemActiveStyle },
+                menuStyles: { ...menuStyles, ...child.props.menuStyles },
                 children: child.props.children,
             };
 
@@ -264,7 +254,7 @@ const MenuItem: React.FC<MenuItemProps> = ({
             const className =
                 styles['react-menu-bar-menu-item-submenu-arrow'] + ' react-menu-bar-menu-item-submenu-arrow';
             return (
-                <span className={className} style={rest.arrowStyle}>
+                <span className={className} style={menuStyles?.menuitem?.arrow}>
                     &#9656;
                 </span>
             );

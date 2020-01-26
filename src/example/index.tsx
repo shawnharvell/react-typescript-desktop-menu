@@ -78,7 +78,7 @@ const Example: React.FC = props => {
                 <Menubar
                     // eslint-disable-next-line
                     // ref={elmt => (menubar = elmt)}
-                    style={{ border: '1px solid #eee' }}
+                    // style={{ border: '1px solid #eee' }}
                     action={menubarHandler}
                     isOpen={menuBarIsOpen}
                     onSetOpen={onMenuBarSetOpen}
@@ -93,7 +93,7 @@ const Example: React.FC = props => {
                         <MenuItem
                             tag="customhover"
                             label="Custom hover color"
-                            activeStyle={{ backgroundColor: 'pink' }}
+                            menuStyles={{ menuitem: { active: { backgroundColor: 'pink' } } }}
                         />
                         <MenuItem
                             tag="checkbox"

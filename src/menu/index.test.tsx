@@ -20,8 +20,10 @@ describe('Divider', () => {
 
 describe('Menubar', () => {
     it('renders without crashing', () => {
+        const mockOnSetOpen = jest.fn();
+
         const wrapper = mount(
-            <Menubar action={mockedActionHandler}>
+            <Menubar action={mockedActionHandler} isOpen={true} onSetOpen={mockOnSetOpen}>
                 <Menu label="test menu">
                     <MenuItem label="test item" tag="test-item" />
                 </Menu>
