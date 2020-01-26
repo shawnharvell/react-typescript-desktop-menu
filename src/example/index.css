@@ -1,0 +1,53 @@
+body {
+    margin: 0;
+    padding: 0;
+    font-family: sans-serif;
+}
+
+#outer {
+    margin: 0 auto;
+    padding-top: 30px;
+    width: 800px;
+}
+
+.container {
+    border: 1px solid black;
+    border-collapse: collapse;
+}
+
+.menu-bar-container {
+    border-bottom: 0;
+}
+
+.pseudo-editor-window {
+    min-height: 400px;
+    padding: 10px;
+    position: relative;
+}
+
+.pseudo-editor-window > p {
+    opacity: 0.3;
+}
+
+#overlay {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: rgba(0, 0, 0, 0.6);
+    z-index: 2;
+    cursor: pointer;
+}
+
+#overlay p {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    font-size: 120%;
+    color: white;
+    transform: translate(-50%, -50%);
+    -ms-transform: translate(-50%, -50%);
+}
