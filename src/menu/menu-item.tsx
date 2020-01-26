@@ -1,7 +1,7 @@
 import React, { CSSProperties, useState, useRef, useEffect } from 'react';
 import { MenuProps } from './menu';
-import styles from './default-styles.css';
 import { MenuStyles } from './shared';
+import styles from './default-styles.module.css';
 
 export interface MenuItemProps {
     icon?: string | React.ReactNode;

@@ -1,5 +1,5 @@
 import React from 'react';
-import styles from './default-styles.css';
+import styles from './default-styles.module.css';
 
 interface DividerProps {
     className?: string;

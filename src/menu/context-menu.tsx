@@ -1,5 +1,5 @@
 import React, { useRef, useCallback, useEffect } from 'react';
-import styles from './default-styles.css';
+import styles from './default-styles.module.css';
 import useContextMenu from './use-context-menu';
 import useOnClickOutside from './use-on-click-outside';
 

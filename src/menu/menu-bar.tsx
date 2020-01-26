@@ -1,6 +1,6 @@
 import React, { useState, useCallback, useRef, useEffect } from 'react';
 import { MenuStyles } from './shared';
-import styles from './default-styles.css';
+import styles from './default-styles.module.css';
 import useOnClickOutside from './use-on-click-outside';
 
 interface MenubarProps {
@@ -15,6 +15,8 @@ interface MenubarProps {
 
 const Menubar: React.FC<MenubarProps> = ({ children, action, onSetOpen, isOpen, menuStyles }) => {
     const items: React.ReactNode[] = [];
+
+    console.log(styles);
 
     const [menuActive, setMenuActive] = useState(-1);
 
